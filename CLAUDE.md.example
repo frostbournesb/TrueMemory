@@ -1,0 +1,16 @@
+# Neuromem — Persistent Memory
+
+When the `neuromem` MCP server is connected, follow these rules:
+
+## Auto-Recall (every session)
+- At the START of each conversation, call `neuromem_search` with a broad query about the user (e.g. "user preferences and context") to load relevant memories before responding.
+- Before making recommendations, check memory for stored preferences.
+- When the user asks anything about past conversations or "do you remember", search memory.
+
+## Auto-Store (during conversation)
+- When the user shares a personal preference, store it immediately via `neuromem_store`. Do not ask permission.
+- When an important decision is made, store it.
+- When the user corrects you, store the correction.
+- When the user shares a fact about themselves (location, job, projects, etc.), store it.
+- Write each memory as a clear, atomic statement: "Prefers bun over npm" not "The user mentioned they like bun."
+- Do NOT store full conversations, large code blocks, or transient debugging context.

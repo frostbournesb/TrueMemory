@@ -1,0 +1,67 @@
+# Virtual environments
+.venv*/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+
+# Local memory data
+memories/
+
+# Research (kept locally, not in repo)
+/charts/
+experiment_results/
+longmemeval_benchmark/
+v3_benchmark/
+research/
+EverMemOS/
+lancedb_data/
+m1_qdrant_data/
+v2_qdrant_data/
+m1_results.json
+synthetic_*.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.env
+benchmark_configuration_journal.md
+benchmarks/locomo/scripts/bench_pro_run*.py
+
+# Dead code (not imported anywhere — verified 2026-04-06)
+neuromem/temporal_v2.py
+neuromem/rich_extraction.py
+neuromem/episodes.py
+
+# Duplicate template
+/CLAUDE_TEMPLATE.md
+
+# Chart HTML sources (PNGs are committed; HTMLs are generation source only)
+assets/charts/*.html
+
+# Untracked benchmark scaffolds (no results yet)
+benchmarks/convomem/
+benchmarks/latency/
+benchmarks/longmemeval/
+
+# Test runner cache
+.pytest_cache/

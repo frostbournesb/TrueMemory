@@ -1,0 +1,97 @@
+[
+  {
+    "type": "human",
+    "content": "Hey, I'm Alice. I'm working on a new project called Project Alpha — it's a network of sensor nodes that capture camera and audio from around my house. I want to feed the data into my memory system.",
+    "timestamp": "2026-04-05T14:22:01Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "Nice — Project Alpha sounds like an ambitious physical-world memory capture system. What's your current hardware setup for the sensor nodes?"
+      }
+    ],
+    "timestamp": "2026-04-05T14:22:08Z"
+  },
+  {
+    "type": "human",
+    "content": "Three nodes so far: office, kitchen, bedroom. Each one has a single-board computer with a 12MP wide-angle camera and an audio HAT. I swapped from the previous camera last week because the field of view was too narrow.",
+    "timestamp": "2026-04-05T14:22:45Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "That's a solid stack. The wide-angle lens should give you much better coverage than the previous camera. Are the nodes streaming continuously or motion-triggered?"
+      }
+    ],
+    "timestamp": "2026-04-05T14:22:58Z"
+  },
+  {
+    "type": "human",
+    "content": "Motion-triggered right now. I'm using a daemon.py that runs lores 320x240 motion detection and kicks into 1280x720 @ 15fps MJPEG when it sees movement. Audio HAT picks up voice too.",
+    "timestamp": "2026-04-05T14:23:30Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "Smart — that's a good bandwidth/quality tradeoff for a low-power board. Where are you storing the captured clips?"
+      }
+    ],
+    "timestamp": "2026-04-05T14:23:41Z"
+  },
+  {
+    "type": "human",
+    "content": "On a local storage server with plenty of space. Next step is running the clips through a dedicated inference server.",
+    "timestamp": "2026-04-05T14:24:15Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "Got it. A local NAS + dedicated GPU box is the right architecture for this. What model are you running on the GPU side?"
+      }
+    ],
+    "timestamp": "2026-04-05T14:24:28Z"
+  },
+  {
+    "type": "human",
+    "content": "Qwen 2.5 7B via Ollama for now. I want to swap to a multimodal model soon for the vision side. Also — correction on what I said earlier: I prefer bun over npm now, I switched last month. All my new projects use bun.",
+    "timestamp": "2026-04-05T14:25:02Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "Noted on the bun preference. Qwen 2.5 7B is a solid starting point — for multimodal you might look at Qwen2-VL or LLaVA-Next."
+      }
+    ],
+    "timestamp": "2026-04-05T14:25:18Z"
+  },
+  {
+    "type": "human",
+    "content": "I decided to use TypeScript for the frontend — I tried JavaScript first but the type safety is worth it for this kind of project. React 18 + Vite + Tauri 2.0.",
+    "timestamp": "2026-04-05T14:26:01Z"
+  },
+  {
+    "type": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "That's the right stack for a native-feeling desktop app with a modern frontend. Tauri 2.0 is much nicer than 1.x."
+      }
+    ],
+    "timestamp": "2026-04-05T14:26:14Z"
+  },
+  {
+    "type": "human",
+    "content": "ok thanks, let me go grab coffee",
+    "timestamp": "2026-04-05T14:26:30Z"
+  }
+]

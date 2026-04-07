@@ -1,0 +1,36 @@
+# LoCoMo Benchmark Dependencies
+# Each bench script is self-contained on Modal; these are listed for reference.
+# Python 3.11 is used across all systems.
+
+# --- Shared (all systems) ---
+openai>=1.0
+modal
+
+# --- BM25 (bench_bm25.py) ---
+rank-bm25
+
+# --- Engram (bench_engram.py) ---
+engram-core
+
+# --- EverMemOS (bench_evermemos.py) ---
+# No additional dependencies (answer generation + judging only)
+
+# --- Mem0 (bench_mem0.py) ---
+mem0ai
+sentence-transformers
+
+# --- Neuromem Base (bench_neuromem_base.py) ---
+# For local development, use: pip install -e . (from repo root)
+neuromem-core
+sentence-transformers
+
+# --- Neuromem Pro (bench_neuromem_pro.py) ---
+neuromem-core[gpu]
+sentence-transformers
+
+# --- RAG / ChromaDB (bench_rag.py) ---
+chromadb
+sentence-transformers
+
+# --- Supermemory (bench_supermemory.py) ---
+supermemory

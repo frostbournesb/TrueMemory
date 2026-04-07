@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use Neuromem, please cite it as below."
+title: "Neuromem"
+authors:
+  - name: "@Building_Josh"
+    affiliation: "Sauron"
+version: "0.2.0"
+date-released: "2026-04-03"
+url: "https://github.com/buildingjoshbetter/neuromem"
+license: Apache-2.0
+keywords:
+  - memory
+  - ai-agents
+  - retrieval
+  - sqlite
+  - locomo
