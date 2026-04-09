@@ -64,6 +64,9 @@ neuromem/temporal_v2.py
 neuromem/rich_extraction.py
 neuromem/episodes.py
 
+# Planning docs (not part of the package)
+NAME_CANDIDATES.md
+
 # Duplicate template
 /CLAUDE_TEMPLATE.md
 

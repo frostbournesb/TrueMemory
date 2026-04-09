@@ -37,6 +37,7 @@ os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
 from mcp.server.fastmcp import FastMCP
 
+from neuromem import __version__
 from neuromem.client import Memory
 
 # ---------------------------------------------------------------------------
@@ -76,32 +77,42 @@ if "tier" in _startup_config:
 
 mcp = FastMCP(
     "neuromem",
-    instructions="""You have access to a persistent memory system (Neuromem). Use it proactively:
+    instructions="""You have access to a persistent memory system (Neuromem). Use it proactively.
 
-STORING MEMORIES (neuromem_store):
+FIRST-TIME SETUP (do this FIRST, before anything else):
+1. Call neuromem_stats at the start of your first session.
+2. If the response contains "setup_required": true, present the "welcome" message to the user EXACTLY as written — it contains the setup instructions.
+3. Wait for the user to choose Base or Pro.
+4. If they choose Pro, ask if they have an API key for enhanced search (Anthropic, OpenRouter, or OpenAI). This is optional but recommended.
+5. Call neuromem_configure with their choices (tier, and optionally api_key + api_provider).
+6. Present the "next_steps" from the response to the user — it shows how to use Neuromem.
+7. Setup is done. Proceed normally.
+
+STATUS CHECK:
+- When the user asks "is Neuromem running?", "what version?", or similar, call neuromem_stats and tell them:
+  "Neuromem v{version} is running. Tier: {tier}. You have {message_count} memories stored."
+- Include the tier (base/pro) and whether HyDE search is active.
+
+AFTER SETUP — NORMAL USAGE:
+
+Storing memories (neuromem_store):
 - When the user shares personal information, preferences, or facts about themselves, store them immediately without being asked.
 - When important decisions are made during a conversation, store them.
 - When the user corrects you or clarifies something, store the correction.
 - Store each fact as a clear, atomic statement. Prefer "User prefers dark mode" over "The user mentioned something about dark mode."
 - Include the user_id parameter when you know who the user is.
 
-RECALLING MEMORIES (neuromem_search):
-- At the START of a conversation, call neuromem_search with a broad query to load relevant context.
+Recalling memories (neuromem_search):
+- At the START of each conversation, call neuromem_search with a broad query to load relevant context.
 - You can search multiple topics at once using | separation: "user preferences | project context | recent decisions"
 - Multiple queries run in parallel — no speed penalty for combining them.
 - Before making recommendations, check if you already have relevant context from prior searches.
 - When the user asks "do you remember" or references past conversations, search for the specific topic.
 
-DEEP SEARCH (neuromem_search_deep):
+Deep search (neuromem_search_deep):
 - Use when neuromem_search doesn't find what you need, or for complex multi-part questions.
 - Also supports | separated parallel queries.
 - Retrieves 5x more candidates internally — best for questions requiring scattered evidence.
-
-FIRST-TIME SETUP:
-- When neuromem_stats shows "tier_configured": false, ask the user which tier they want:
-  - Base (default): 88.2% accuracy on LoCoMo. Works on any machine. Fast and lightweight.
-  - Pro: 91.5% accuracy on LoCoMo. Needs 4GB+ RAM and `pip install neuromem-core[gpu]`.
-- Call neuromem_configure with their choice. This only needs to happen once.
 
 You should store and recall memories as naturally as a good assistant who remembers past conversations. Do not ask permission to remember things — just do it.""",
 )
@@ -408,29 +419,79 @@ def neuromem_forget(memory_id: int) -> str:
 
 @mcp.tool()
 def neuromem_stats() -> str:
-    """Get memory system statistics (message count, DB size, capabilities)."""
+    """Get memory system statistics. On first run, returns a welcome message
+    and setup instructions — present these to the user to walk them through
+    choosing Base or Pro tier."""
     m = _get_memory()
+    m._engine._ensure_connection()
     stats = m.stats()
     config = _load_config()
+    stats["version"] = __version__
     stats["tier"] = config.get("tier", "base")
     stats["tier_configured"] = "tier" in config
+
+    if not stats["tier_configured"]:
+        stats["setup_required"] = True
+        stats["welcome"] = (
+            f"Welcome to Neuromem v{__version__} — persistent memory for AI agents.\n"
+            "\n"
+            "Your memories are stored locally in a single SQLite file. "
+            "Zero cloud, zero infrastructure cost.\n"
+            "\n"
+            "Choose your tier:\n"
+            "\n"
+            "  Base — 88.2% accuracy on LoCoMo. Works on any machine.\n"
+            "          Lightweight (~30MB). No API key needed.\n"
+            "\n"
+            "  Pro  — 91.5% accuracy on LoCoMo. Needs 4GB+ RAM.\n"
+            "          Larger models (~1.5GB one-time download).\n"
+            "          Optional API key enables HyDE query expansion for even better search.\n"
+            "\n"
+            "Which would you like: Base or Pro?"
+        )
+        stats["has_api_key"] = bool(
+            os.environ.get("ANTHROPIC_API_KEY")
+            or os.environ.get("OPENROUTER_API_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+            or config.get("anthropic_api_key")
+            or config.get("openrouter_api_key")
+            or config.get("openai_api_key")
+        )
+
     return json.dumps(stats, indent=2, default=str)
 
 
 @mcp.tool()
-def neuromem_configure(tier: str) -> str:
-    """Configure Neuromem's embedding tier. Call this once during first-time setup.
-
-    Base: 88.2% accuracy on LoCoMo. Works on any machine. ~30MB download.
-    Pro: 91.5% accuracy on LoCoMo. Needs 4GB+ RAM. ~1.5GB one-time download.
+def neuromem_configure(
+    tier: str,
+    api_key: str = "",
+    api_provider: str = "",
+) -> str:
+    """Configure Neuromem. Call this once during first-time setup,
+    or again to change tier or update API keys.
 
     Args:
         tier: "base" or "pro".
+        api_key: Optional API key for enhanced search (HyDE query expansion).
+                 Supported providers: anthropic, openrouter, openai.
+        api_provider: Required if api_key is provided. One of: "anthropic", "openrouter", "openai".
     """
     global _memory
     tier = tier.lower().strip()
     if tier not in ("base", "pro"):
         return json.dumps({"error": "tier must be 'base' or 'pro'"})
+
+    # Validate API key + provider pairing
+    if api_key and not api_provider:
+        return json.dumps({
+            "error": "api_provider is required when api_key is provided. Use: anthropic, openrouter, or openai",
+        })
+    if api_provider:
+        api_provider = api_provider.lower().strip()
+        if api_provider not in ("anthropic", "openrouter", "openai"):
+            return json.dumps({
+                "error": "api_provider must be one of: anthropic, openrouter, openai",
+            })
 
     # Check pro dependencies before committing
     if tier == "pro":
@@ -446,7 +507,18 @@ def neuromem_configure(tier: str) -> str:
     config = _load_config()
     old_tier = config.get("tier", "base")
     config["tier"] = tier
+
+    # Store API key if provided
+    if api_key and api_provider:
+        config[f"{api_provider}_api_key"] = api_key
+
     _save_config(config)
+
+    # Invalidate cached LLM function so it picks up the new key
+    if api_key:
+        global _cached_llm_fn, _cached_llm_fn_built
+        _cached_llm_fn = None
+        _cached_llm_fn_built = False
 
     # Apply model change — temporarily allow downloads for tier switch
     # (the new model may not be cached yet)
@@ -481,6 +553,7 @@ def neuromem_configure(tier: str) -> str:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
+    # Build result with onboarding info
     result = {
         "status": "configured",
         "tier": tier,
@@ -490,6 +563,40 @@ def neuromem_configure(tier: str) -> str:
     }
     if rebuilt:
         result["note"] = "Existing memories have been re-embedded with the new model."
+    if api_key:
+        result["api_key_saved"] = f"{api_provider} key stored"
+
+    # Check if HyDE search is available
+    has_key = bool(
+        os.environ.get("ANTHROPIC_API_KEY")
+        or os.environ.get("OPENROUTER_API_KEY")
+        or os.environ.get("OPENAI_API_KEY")
+        or config.get("anthropic_api_key")
+        or config.get("openrouter_api_key")
+        or config.get("openai_api_key")
+    )
+    result["hyde_search"] = "enabled" if has_key else "disabled (no API key — search still works, just without query expansion)"
+
+    # Onboarding: usage examples and next steps
+    result["next_steps"] = (
+        "Neuromem is ready. Here's how it works:\n"
+        "\n"
+        "  Storing:  I'll automatically remember things you tell me — preferences,\n"
+        "            facts, decisions, corrections. You don't need to ask.\n"
+        "\n"
+        "  Recalling: At the start of each session, I'll search your memories\n"
+        "             for relevant context. You can also ask me directly:\n"
+        "             \"Do you remember...?\" or \"What do you know about...?\"\n"
+        "\n"
+        "  Examples to try:\n"
+        "    - \"I prefer dark mode and TypeScript\"\n"
+        "    - \"Remember that our deploy freezes happen on Thursdays\"\n"
+        "    - \"What are my preferences?\"\n"
+        "    - \"Do you remember what we discussed about the auth rewrite?\"\n"
+        "\n"
+        "  Everything is stored locally at ~/.neuromem/memories.db.\n"
+        "  Go ahead — I'm ready."
+    )
 
     return json.dumps(result, indent=2)
 
@@ -575,11 +682,93 @@ def _preload_models():
 
 
 # ---------------------------------------------------------------------------
+# Auto-setup for Claude Code and Claude Desktop
+# ---------------------------------------------------------------------------
+
+def _setup_claude():
+    """Auto-configure Neuromem as an MCP server in Claude Code and/or Claude Desktop.
+
+    Detects which Claude clients are available and configures both.
+    Uses sys.executable so the MCP server runs with the same Python
+    that has neuromem installed (works in venvs, homebrew, system python, etc.).
+    """
+    import shutil
+    import subprocess
+    import sys
+
+    python_path = sys.executable
+    configured = []
+
+    # --- Claude Code CLI ---
+    claude_bin = shutil.which("claude")
+    if claude_bin:
+        result = subprocess.run(
+            [claude_bin, "mcp", "add", "neuromem", "--",
+             python_path, "-m", "neuromem.mcp_server"],
+            capture_output=True, text=True,
+        )
+        if result.returncode == 0:
+            configured.append("Claude Code")
+        else:
+            # May already exist — check stderr
+            if "already exists" in (result.stderr or "").lower():
+                configured.append("Claude Code (already configured)")
+            else:
+                print(f"  Claude Code: failed — {result.stderr.strip()}")
+
+    # --- Claude Desktop ---
+    desktop_config_path = Path.home() / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json"
+    if desktop_config_path.parent.exists():
+        try:
+            if desktop_config_path.exists():
+                config = json.loads(desktop_config_path.read_text())
+            else:
+                config = {}
+
+            servers = config.setdefault("mcpServers", {})
+            if "neuromem" not in servers:
+                servers["neuromem"] = {
+                    "command": python_path,
+                    "args": ["-m", "neuromem.mcp_server"],
+                }
+                desktop_config_path.write_text(json.dumps(config, indent=2))
+                configured.append("Claude Desktop")
+            else:
+                configured.append("Claude Desktop (already configured)")
+        except Exception as e:
+            print(f"  Claude Desktop: failed — {e}")
+
+    # --- Report ---
+    print()
+    print(f"  Neuromem v{__version__}")
+    print()
+    if configured:
+        for c in configured:
+            print(f"  + {c}")
+        print()
+        print("  Start a new Claude session — Neuromem will walk you through setup.")
+    else:
+        if not claude_bin:
+            print("  Claude Code CLI not found on PATH.")
+        if not desktop_config_path.parent.exists():
+            print("  Claude Desktop not detected.")
+        print()
+        print("  Manual setup:")
+        print(f"    claude mcp add neuromem -- {python_path} -m neuromem.mcp_server")
+    print()
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
 def main():
-    """Run the MCP server (stdio transport)."""
+    """Run the MCP server, or --setup to auto-configure Claude."""
+    import sys
+    if "--setup" in sys.argv:
+        _setup_claude()
+        return
+
     # Kick off model preloading before entering the event loop.
     # Models load in background threads (~2.5s) while the MCP handshake
     # completes (~1-3s), so by the time the first search arrives,

@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  One SQLite file. Zero cloud. Ten minutes to set up.
+  One SQLite file. Zero cloud. One command to set up.
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="#-benchmark">Benchmark</a> · <a href="#-research-highlights">Highlights</a> · <a href="#-base-vs-pro">Base vs Pro</a> · <a href="#-quickstart">Install</a> · <a href="#-claude-integration">Claude</a> · <a href="#-api">API</a>
+  <a href="#-benchmark">Benchmark</a> · <a href="#-research-highlights">Highlights</a> · <a href="#-base-vs-pro">Base vs Pro</a> · <a href="#-quickstart">Install</a> · <a href="#-what-happens-on-first-run">First Run</a> · <a href="#-api">API</a>
 </p>
 
 ---
@@ -75,19 +75,27 @@ Same features, same 6-layer pipeline. **Pro upgrades the embedding model and the
 
 ## 🚀 Quickstart
 
-### Base
+### Claude Code / Claude Desktop
+
+One command. Installs Neuromem and auto-configures Claude:
+
+```bash
+pip install neuromem-core[gpu,mcp] && neuromem-mcp --setup
+```
+
+That's it. Start a new Claude session — Neuromem walks you through choosing **Base** or **Pro** on first run, and you're ready to go.
+
+> **Lightweight install** (Base only, ~30MB instead of ~1.5GB):
+> ```bash
+> pip install neuromem-core[mcp] && neuromem-mcp --setup
+> ```
+> If you pick Pro later, Neuromem will prompt you to install the extra models.
+
+### Python library (no Claude)
 
 ```bash
 pip install neuromem-core
 ```
-
-### Pro
-
-```bash
-pip install neuromem-core[gpu]
-```
-
-### Usage
 
 ```python
 from neuromem import Memory
@@ -105,57 +113,50 @@ The database is created automatically at `~/.neuromem/memories.db`.
 
 ---
 
-## 🤖 Claude Integration
+## 🤖 What happens on first run?
 
 Claude forgets you between sessions. Neuromem fixes that.
 
-### 1. Install with MCP support
+On your first session after installing, Neuromem will:
 
-**Base:**
+1. **Welcome you** and show your current version
+2. **Ask Base or Pro** — you choose your accuracy tier
+3. **Optionally accept an API key** — for enhanced search via HyDE query expansion (Anthropic, OpenRouter, or OpenAI)
+4. **Show you how it works** — with example prompts to try
+
+After setup, Neuromem runs automatically. It stores what you tell it and recalls it in future sessions — no manual work needed.
+
+### Make it automatic (optional)
+
+Copy [`CLAUDE.md.example`](CLAUDE.md.example) to your home directory as `CLAUDE.md`. This tells Claude to store your preferences and recall them without being asked:
+
 ```bash
-pip install neuromem-core[mcp]
+cp CLAUDE.md.example ~/CLAUDE.md
 ```
 
-**Pro:**
+### Manual setup
+
+If `--setup` doesn't detect your Claude installation, you can configure manually:
+
+**Claude Code:**
 ```bash
-pip install neuromem-core[gpu,mcp]
+claude mcp add neuromem -- python -m neuromem.mcp_server
 ```
 
-### 2. Add to your Claude config
-
-**Claude Code**: add to `~/.claude.json` under `"mcpServers"`:
+**Claude Desktop:** add to `claude_desktop_config.json` (Settings > Developer > Edit Config):
 
 ```json
 {
   "mcpServers": {
     "neuromem": {
       "command": "python",
-      "args": ["-m", "neuromem.mcp_server"],
-      "env": {}
+      "args": ["-m", "neuromem.mcp_server"]
     }
   }
 }
 ```
 
-**Claude Desktop**: add to `claude_desktop_config.json` (Settings > Developer > Edit Config), same format.
-
-> If you installed in a virtualenv, use the full path to that Python (e.g. `"/path/to/venv/bin/python"`) instead of `"python"`.
-
-Neuromem starts in **Base** mode by default. On your first session, Claude will ask if you'd like to upgrade to **Pro**. You can switch at any time. Your existing memories are automatically re-embedded.
-
-### 3. Make it automatic
-
-Copy [`CLAUDE.md.example`](CLAUDE.md.example) to your project root or home directory as `CLAUDE.md`. This tells Claude to automatically store your preferences and recall them without being asked.
-
-```bash
-cp CLAUDE.md.example ~/CLAUDE.md
-```
-
-### 4. Test it
-
-Start a new Claude session:
-- Say *"I always prefer dark mode"*. Claude stores it automatically.
-- Open another session and ask *"What are my preferences?"*. It remembers.
+> If you installed in a virtualenv, use the full path to that Python (e.g. `"/path/to/venv/bin/python"`).
 
 ---
 
