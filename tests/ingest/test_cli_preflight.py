@@ -2,10 +2,10 @@
 Tests for CLI preflight checks added in round 2.
 
 Verifies:
-- `neuromem-ingest ingest` with a nonexistent transcript exits with error code 2
-- `neuromem-ingest ingest` without neuromem-core installed exits with error code 2
-- `neuromem-ingest status` runs without crashing even when neuromem-core is missing
-- `neuromem-ingest install --dry-run` prints the settings without writing
+- `truememory-ingest ingest` with a nonexistent transcript exits with error code 2
+- `truememory-ingest ingest` without truememory installed exits with error code 2
+- `truememory-ingest status` runs without crashing even when truememory is missing
+- `truememory-ingest install --dry-run` prints the settings without writing
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ def _run_cli(args: list[str], env: dict | None = None) -> subprocess.CompletedPr
         base_env.update(env)
 
     return subprocess.run(
-        [sys.executable, "-m", "neuromem.ingest.cli"] + args,
+        [sys.executable, "-m", "truememory.ingest.cli"] + args,
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
@@ -40,9 +40,9 @@ def _run_cli(args: list[str], env: dict | None = None) -> subprocess.CompletedPr
 def test_ingest_nonexistent_transcript_exits_cleanly():
     """Ingest with a nonexistent file should exit with code 2 and a clear error.
 
-    Note: preflight runs checks in order (neuromem-core import, then transcript
-    existence). In environments without neuromem-core installed, the error
-    surfaces as "neuromem-core is not installed" rather than "transcript not
+    Note: preflight runs checks in order (truememory import, then transcript
+    existence). In environments without truememory installed, the error
+    surfaces as "truememory is not installed" rather than "transcript not
     found" — both are valid exit-code-2 error paths.
     """
     result = _run_cli(["ingest", "/nonexistent/path/transcript.json"])
@@ -52,7 +52,7 @@ def test_ingest_nonexistent_transcript_exits_cleanly():
     assert (
         "not found" in stderr_lower
         or "no such" in stderr_lower
-        or "neuromem-core is not installed" in stderr_lower
+        or "truememory is not installed" in stderr_lower
         or "error:" in stderr_lower
     ), f"Expected a clear error message, got stderr:\n{result.stderr}"
 
@@ -70,19 +70,19 @@ def test_help_command_works():
     """--help should print usage without errors."""
     result = _run_cli(["--help"])
     assert result.returncode == 0
-    assert "neuromem-ingest" in result.stdout.lower() or "usage" in result.stdout.lower()
+    assert "truememory-ingest" in result.stdout.lower() or "usage" in result.stdout.lower()
     assert "install" in result.stdout
     assert "ingest" in result.stdout
     assert "status" in result.stdout
 
 
 def test_status_command_runs():
-    """status should run without crashing even if neuromem-core is missing."""
+    """status should run without crashing even if truememory is missing."""
     result = _run_cli(["status"])
     # Should not crash — exit code 0 (even with warnings)
     assert result.returncode == 0, f"status crashed: {result.stderr}"
     combined = result.stdout + result.stderr
-    assert "Status Check" in combined or "neuromem" in combined.lower()
+    assert "Status Check" in combined or "truememory" in combined.lower()
 
 
 def test_install_help_shows_flags():
@@ -96,7 +96,7 @@ def test_install_help_shows_flags():
 
 def test_logs_command_handles_missing_log_dir():
     """logs command should handle a missing log dir gracefully."""
-    # Set HOME to a temp dir so ~/.neuromem/logs doesn't exist
+    # Set HOME to a temp dir so ~/.truememory/logs doesn't exist
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         result = _run_cli(["logs"], env={"HOME": tmp})

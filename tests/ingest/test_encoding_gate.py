@@ -1,7 +1,7 @@
 """Tests for the hippocampal encoding gate."""
 
 from unittest.mock import MagicMock
-from neuromem.ingest.encoding_gate import EncodingGate, EncodingDecision
+from truememory.ingest.encoding_gate import EncodingGate, EncodingDecision
 
 
 class FakeMemory:

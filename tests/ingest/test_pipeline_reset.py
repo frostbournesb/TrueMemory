@@ -13,7 +13,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from neuromem.ingest.pipeline import IngestionPipeline
+from truememory.ingest.pipeline import IngestionPipeline
 
 
 class MockMemory:

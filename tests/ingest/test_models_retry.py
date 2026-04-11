@@ -13,7 +13,7 @@ from __future__ import annotations
 import socket
 import urllib.error
 
-from neuromem.ingest.models import (
+from truememory.ingest.models import (
     LLMConfig,
     LLMError,
     _MAX_RETRIES,

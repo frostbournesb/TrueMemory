@@ -1,11 +1,11 @@
-# Contributing to Neuromem
+# Contributing to TrueMemory
 
 Thanks for your interest in contributing.
 
 ## Architecture Overview
 
-Neuromem uses a 6-layer memory pipeline. Each layer is implemented as a
-standalone module in `neuromem/`:
+TrueMemory uses a 6-layer memory pipeline. Each layer is implemented as a
+standalone module in `truememory/`:
 
 | Layer | Name | Module(s) |
 |-------|------|-----------|
@@ -22,7 +22,7 @@ whatever layers are available.
 
 ### Ingest Subpackage
 
-The `neuromem/ingest/` subpackage provides automatic memory capture via
+The `truememory/ingest/` subpackage provides automatic memory capture via
 Claude Code hooks. It includes:
 
 - `extractor.py` — LLM-based memory extraction from conversation transcripts
@@ -31,7 +31,7 @@ Claude Code hooks. It includes:
 - `pipeline.py` — end-to-end ingestion orchestrator
 - `hooks/` — Claude Code hook scripts for automatic capture
 
-Ingest depends on `neuromem` core for storage and search but can be
+Ingest depends on `truememory` core for storage and search but can be
 installed and run independently.
 
 ## Getting Started
@@ -40,7 +40,7 @@ installed and run independently.
 2. Create a virtualenv: `python -m venv .venv && source .venv/bin/activate`
 3. Install in dev mode: `pip install -e .[all]`
 4. Run tests: `pytest tests/ -v`
-5. Run linter: `ruff check neuromem/`
+5. Run linter: `ruff check truememory/`
 
 ## Code Style
 
@@ -54,11 +54,11 @@ installed and run independently.
 
 - One feature/fix per PR.
 - Include a clear description of what changed and why.
-- Run `ruff check neuromem/` and `pytest tests/ -v` before submitting.
+- Run `ruff check truememory/` and `pytest tests/ -v` before submitting.
 
 ## Reporting Issues
 
-Use [GitHub Issues](https://github.com/buildingjoshbetter/neuromem/issues).
+Use [GitHub Issues](https://github.com/buildingjoshbetter/TrueMemory/issues).
 Include your Python version, OS, and steps to reproduce.
 
 ## License

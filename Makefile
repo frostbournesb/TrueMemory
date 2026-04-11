@@ -10,7 +10,7 @@ test:
 	pytest tests/ -v
 
 lint:
-	ruff check neuromem/
+	ruff check truememory/
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

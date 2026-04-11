@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug in Neuromem
+about: Report a bug in TrueMemory
 title: '[Bug] '
 labels: bug
 ---
@@ -17,5 +17,5 @@ What you expected to happen.
 **Environment**
 - OS:
 - Python version:
-- neuromem-core version:
+- truememory version:
 - Tier (Base/Pro):

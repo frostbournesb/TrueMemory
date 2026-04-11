@@ -55,14 +55,14 @@ secrets.*
 benchmark_configuration_journal.md
 benchmarks/locomo/scripts/bench_pro_run*.py
 
-# Neuromem user data (contains real memories / PII)
-~/.neuromem/
+# TrueMemory user data (contains real memories / PII)
+~/.truememory/
 *.db-journal
 
 # Dead code (not imported anywhere — verified 2026-04-06)
-neuromem/temporal_v2.py
-neuromem/rich_extraction.py
-neuromem/episodes.py
+truememory/temporal_v2.py
+truememory/rich_extraction.py
+truememory/episodes.py
 
 # Planning docs (not part of the package)
 NAME_CANDIDATES.md

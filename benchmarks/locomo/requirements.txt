@@ -19,13 +19,13 @@ engram-core
 mem0ai
 sentence-transformers
 
-# --- Neuromem Base (bench_neuromem_base.py) ---
+# --- TrueMemory Base (bench_truememory_base.py) ---
 # For local development, use: pip install -e . (from repo root)
-neuromem-core
+truememory
 sentence-transformers
 
-# --- Neuromem Pro (bench_neuromem_pro.py) ---
-neuromem-core[gpu]
+# --- TrueMemory Pro (bench_truememory_pro.py) ---
+truememory[gpu]
 sentence-transformers
 
 # --- RAG / ChromaDB (bench_rag.py) ---

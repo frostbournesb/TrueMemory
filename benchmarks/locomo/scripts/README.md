@@ -51,20 +51,20 @@ modal run --detach bench_mem0.py          # Full run
 modal run --detach bench_mem0.py --smoke  # Smoke test
 ```
 
-### bench_neuromem_base.py -- Neuromem Base Tier
-Neuromem Base using Model2Vec (`potion-base-8M`, 256-dim) embeddings and cross-encoder reranker (`ms-marco-MiniLM-L6-v2`, 22M params). No HyDE, no GPU required.
+### bench_truememory_base.py -- TrueMemory Base Tier
+TrueMemory Base using Model2Vec (`potion-base-8M`, 256-dim) embeddings and cross-encoder reranker (`ms-marco-MiniLM-L6-v2`, 22M params). No HyDE, no GPU required.
 
 ```bash
-modal run --detach bench_neuromem_base.py          # Full run
-modal run --detach bench_neuromem_base.py --smoke  # Smoke test
+modal run --detach bench_truememory_base.py          # Full run
+modal run --detach bench_truememory_base.py --smoke  # Smoke test
 ```
 
-### bench_neuromem_pro.py -- Neuromem Pro Tier (GPU)
-Neuromem Pro using Qwen3-Embedding-0.6B (1024-dim) embeddings, mxbai-rerank-large-v1 (435M params) reranker, and HyDE (Hypothetical Document Embeddings) via OpenRouter LLM. Requires a T4 GPU on Modal.
+### bench_truememory_pro.py -- TrueMemory Pro Tier (GPU)
+TrueMemory Pro using Qwen3-Embedding-0.6B (1024-dim) embeddings, mxbai-rerank-large-v1 (435M params) reranker, and HyDE (Hypothetical Document Embeddings) via OpenRouter LLM. Requires a T4 GPU on Modal.
 
 ```bash
-modal run --detach bench_neuromem_pro.py          # Full run
-modal run --detach bench_neuromem_pro.py --smoke  # Smoke test
+modal run --detach bench_truememory_pro.py          # Full run
+modal run --detach bench_truememory_pro.py --smoke  # Smoke test
 ```
 
 ### bench_rag.py -- ChromaDB RAG Baseline

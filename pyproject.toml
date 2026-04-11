@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "neuromem-core"
+name = "truememory"
 version = "0.2.2"
 description = "SOTA-level agent memory at zero infrastructure cost."
 readme = "README.md"
@@ -37,23 +37,23 @@ reranker = ["sentence-transformers>=3.0.0", "torch>=2.0.0"]
 agentic = ["anthropic>=0.80.0"]
 mcp = ["mcp[cli]>=1.0.0", "httpx>=0.27.0"]
 dev = ["pytest>=7.0", "ruff>=0.4"]
-all = ["neuromem-core[gpu,reranker,agentic,mcp]"]
+all = ["truememory[gpu,reranker,agentic,mcp]"]
 
 [project.scripts]
-neuromem-mcp = "neuromem.mcp_server:main"
-neuromem-ingest = "neuromem.ingest.cli:main"
+truememory-mcp = "truememory.mcp_server:main"
+truememory-ingest = "truememory.ingest.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/buildingjoshbetter/neuromem"
-Repository = "https://github.com/buildingjoshbetter/neuromem"
-Issues = "https://github.com/buildingjoshbetter/neuromem/issues"
-Changelog = "https://github.com/buildingjoshbetter/neuromem/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/buildingjoshbetter/TrueMemory"
+Repository = "https://github.com/buildingjoshbetter/TrueMemory"
+Issues = "https://github.com/buildingjoshbetter/TrueMemory/issues"
+Changelog = "https://github.com/buildingjoshbetter/TrueMemory/blob/main/CHANGELOG.md"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["neuromem"]
+packages = ["truememory"]
 
-# CLAUDE_TEMPLATE.md lives inside the package at neuromem/ingest/CLAUDE_TEMPLATE.md
+# CLAUDE_TEMPLATE.md lives inside the package at truememory/ingest/CLAUDE_TEMPLATE.md
 # so it's auto-included in the wheel — no force-include needed.

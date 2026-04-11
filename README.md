@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/charts/hero-banner.png" alt="Neuromem" />
+  <img src="assets/charts/hero-banner.png" alt="TrueMemory" />
 </p>
 
 <p align="center">
@@ -7,9 +7,9 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/neuromem-core/"><img src="https://img.shields.io/pypi/v/neuromem-core?color=blue&label=PyPI" alt="PyPI"></a>
-  <a href="https://pypi.org/project/neuromem-core/"><img src="https://img.shields.io/pypi/pyversions/neuromem-core?color=blue" alt="Python"></a>
-  <a href="https://github.com/buildingjoshbetter/neuromem/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"></a>
+  <a href="https://pypi.org/project/truememory/"><img src="https://img.shields.io/pypi/v/truememory?color=blue&label=PyPI" alt="PyPI"></a>
+  <a href="https://pypi.org/project/truememory/"><img src="https://img.shields.io/pypi/pyversions/truememory?color=blue" alt="Python"></a>
+  <a href="https://github.com/buildingjoshbetter/TrueMemory/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"></a>
   <img src="https://img.shields.io/badge/Base-88.2%25_LoCoMo-brightgreen" alt="Base Score">
   <img src="https://img.shields.io/badge/Pro-91.5%25_LoCoMo-blue" alt="Pro Score">
 </p>
@@ -32,7 +32,7 @@ Tested on [LoCoMo](https://github.com/snap-research/locomo), the standard benchm
   <img src="assets/charts/leaderboard-bar.png" alt="LoCoMo 8-System Comparison" />
 </p>
 
-Neuromem achieves **state-of-the-art accuracy for fully-local memory systems** at zero ongoing infrastructure cost. Base runs entirely offline with no API keys. Pro adds one small LLM call per query for HyDE query expansion.
+TrueMemory achieves **state-of-the-art accuracy for fully-local memory systems** at zero ongoing infrastructure cost. Base runs entirely offline with no API keys. Pro adds one small LLM call per query for HyDE query expansion.
 
 <p align="center">
   <img src="assets/charts/accuracy-vs-cost.png" alt="Accuracy vs Infrastructure Cost" />
@@ -54,7 +54,7 @@ All scores use the same evaluation pipeline: GPT-4.1-mini answer generation, GPT
   <img src="assets/charts/category-radar.png" alt="Category Breakdown" />
 </p>
 
-Neuromem Pro nearly matches EverMemOS across all 4 question categories. Mem0 collapses on multi-hop reasoning (37.7% vs 90.7%).
+TrueMemory Pro nearly matches EverMemOS across all 4 question categories. Mem0 collapses on multi-hop reasoning (37.7% vs 90.7%).
 
 ---
 
@@ -86,34 +86,34 @@ One command. Works on any Mac or Linux box, **even if your system Python is old 
 **Step 2.** Paste this one line and press `Enter`:
 
 ```bash
-curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/neuromem/main/install.sh | sh
+curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/TrueMemory/main/install.sh | sh
 ```
 
 **Step 3.** Wait ~1-2 minutes while it downloads and installs. You'll see progress messages scroll by — that's normal.
 
-**Step 4.** If Claude Desktop was already open, **quit it with `Cmd+Q` and reopen it** (a new chat window is not enough — the config is only read at launch). Then start a new Claude session and Neuromem walks you through choosing **Base** or **Pro** on first run.
+**Step 4.** If Claude Desktop was already open, **quit it with `Cmd+Q` and reopen it** (a new chat window is not enough — the config is only read at launch). Then start a new Claude session and TrueMemory walks you through choosing **Base** or **Pro** on first run.
 
-> **What this actually does:** installs [uv](https://docs.astral.sh/uv/) (Astral's Python tool manager) if needed, fetches a managed Python 3.12 into `~/.local/share/uv/`, installs Neuromem into an isolated tool environment, and auto-configures Claude Code and Claude Desktop. **Your system Python is never touched.** No sudo, no venvs, no pip struggle. Uninstall cleanly with `uv tool uninstall neuromem-core`.
+> **What this actually does:** installs [uv](https://docs.astral.sh/uv/) (Astral's Python tool manager) if needed, fetches a managed Python 3.12 into `~/.local/share/uv/`, installs TrueMemory into an isolated tool environment, and auto-configures Claude Code and Claude Desktop. **Your system Python is never touched.** No sudo, no venvs, no pip struggle. Uninstall cleanly with `uv tool uninstall truememory`.
 
-> **Want to audit the script first?** It's ~140 lines of shell, no sudo, stays entirely under `$HOME`. Read the source at [`install.sh`](install.sh), or download and inspect locally: `curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/neuromem/main/install.sh -o install.sh && less install.sh && sh install.sh`.
+> **Want to audit the script first?** It's ~140 lines of shell, no sudo, stays entirely under `$HOME`. Read the source at [`install.sh`](install.sh), or download and inspect locally: `curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/TrueMemory/main/install.sh -o install.sh && less install.sh && sh install.sh`.
 
 > **Want Pro (adds GPU reranker + sentence-transformers, ~1.5-2.5GB depending on OS)?**
 > ```bash
-> curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/neuromem/main/install.sh | NEUROMEM_EXTRAS="gpu,mcp" sh
+> curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/TrueMemory/main/install.sh | TRUEMEMORY_EXTRAS="gpu,mcp" sh
 > ```
-> The default install is **Base** (~30MB). If you pick Pro during first-run setup, Neuromem will prompt you to install the extra models.
+> The default install is **Base** (~30MB). If you pick Pro during first-run setup, TrueMemory will prompt you to install the extra models.
 > *(Linux CPU-only boxes will pull PyTorch's default CUDA wheel, which is larger — ~2.5GB total. Mac installs are closer to ~1.5GB.)*
 
 ### Python library (for developers)
 
-If you're embedding Neuromem in your own Python project (requires Python 3.10+):
+If you're embedding TrueMemory in your own Python project (requires Python 3.10+):
 
 ```bash
-pip install neuromem-core
+pip install truememory
 ```
 
 ```python
-from neuromem import Memory
+from truememory import Memory
 
 m = Memory()
 m.add("Prefers dark mode and TypeScript", user_id="alex")
@@ -124,22 +124,22 @@ print(results[0]["content"])
 # → "Prefers dark mode and TypeScript"
 ```
 
-The database is created automatically at `~/.neuromem/memories.db`.
+The database is created automatically at `~/.truememory/memories.db`.
 
 ---
 
 ## 🤖 What happens on first run?
 
-Claude forgets you between sessions. Neuromem fixes that.
+Claude forgets you between sessions. TrueMemory fixes that.
 
-On your first session after installing, Neuromem will:
+On your first session after installing, TrueMemory will:
 
 1. **Welcome you** and show your current version
 2. **Ask Base or Pro** — you choose your accuracy tier
 3. **Optionally accept an API key** — for enhanced search via HyDE query expansion (Anthropic, OpenRouter, or OpenAI)
 4. **Show you how it works** — with example prompts to try
 
-After setup, Neuromem runs automatically. It stores what you tell it and recalls it in future sessions — no manual work needed.
+After setup, TrueMemory runs automatically. It stores what you tell it and recalls it in future sessions — no manual work needed.
 
 ### Make it automatic (optional)
 
@@ -155,7 +155,7 @@ If auto-setup doesn't detect your Claude installation, you can configure manuall
 
 **Claude Code** (if you used the installer above):
 ```bash
-claude mcp add neuromem -- neuromem-mcp
+claude mcp add truememory -- truememory-mcp
 ```
 
 **Claude Desktop:** add to `claude_desktop_config.json` (Settings > Developer > Edit Config):
@@ -163,29 +163,29 @@ claude mcp add neuromem -- neuromem-mcp
 ```json
 {
   "mcpServers": {
-    "neuromem": {
-      "command": "/Users/YOU/.local/bin/neuromem-mcp"
+    "truememory": {
+      "command": "/Users/YOU/.local/bin/truememory-mcp"
     }
   }
 }
 ```
 
-> Use the **absolute path** to `neuromem-mcp` — run `which neuromem-mcp` to find it. Claude Desktop (and most non-Claude-Code MCP clients) don't inherit your shell's PATH, so relative commands will silently fail.
+> Use the **absolute path** to `truememory-mcp` — run `which truememory-mcp` to find it. Claude Desktop (and most non-Claude-Code MCP clients) don't inherit your shell's PATH, so relative commands will silently fail.
 
-**No-install alternative (uvx):** skip installing Neuromem entirely and let Claude run it ephemerally. Requires [uv](https://docs.astral.sh/uv/) to be installed.
+**No-install alternative (uvx):** skip installing TrueMemory entirely and let Claude run it ephemerally. Requires [uv](https://docs.astral.sh/uv/) to be installed.
 
 ```json
 {
   "mcpServers": {
-    "neuromem": {
+    "truememory": {
       "command": "/Users/YOU/.local/bin/uvx",
-      "args": ["--python", "3.12", "--from", "neuromem-core[mcp]", "neuromem-mcp"]
+      "args": ["--python", "3.12", "--from", "truememory[mcp]", "truememory-mcp"]
     }
   }
 }
 ```
 
-uvx creates a cached environment on first run; subsequent spawns are fast. Good if you want Neuromem to always be latest-on-PyPI without managing an install.
+uvx creates a cached environment on first run; subsequent spawns are fast. Good if you want TrueMemory to always be latest-on-PyPI without managing an install.
 
 ---
 
@@ -217,12 +217,12 @@ Every benchmark script is self-contained and runs on [Modal](https://modal.com).
 ## 📝 Citation
 
 ```bibtex
-@software{neuromem2026,
-  title = {Neuromem: State-of-the-Art Local-First Agent Memory},
+@software{truememory2026,
+  title = {TrueMemory: State-of-the-Art Local-First Agent Memory},
   author = {@Building\_Josh},
   organization = {Sauron},
   year = {2026},
-  url = {https://github.com/buildingjoshbetter/neuromem},
+  url = {https://github.com/buildingjoshbetter/TrueMemory},
   version = {0.2.0}
 }
 ```

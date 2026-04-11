@@ -1,6 +1,6 @@
 """Core Memory class tests using in-memory database."""
 import pytest
-from neuromem import Memory
+from truememory import Memory
 
 
 @pytest.fixture

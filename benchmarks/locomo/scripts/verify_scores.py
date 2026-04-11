@@ -20,8 +20,8 @@ EXPECTED_SCORES = {
     "engram_v2_run1.json": 84.5,
     "evermemos_v2_run1.json": 94.5,
     "mem0_v2_run1.json": 61.4,
-    "neuromem_base_v2_run1.json": 88.2,
-    "neuromem_pro_v3_modal.json": 91.5,
+    "truememory_base_v2_run1.json": 88.2,
+    "truememory_pro_v3_modal.json": 91.5,
     "rag_v2_run1.json": 86.2,
     "supermemory_v2_run1.json": 65.4,
 }
@@ -77,7 +77,7 @@ def verify_file(filepath: Path, claimed_score: float = None):
 
 def main():
     print("=" * 60)
-    print("NEUROMEM BENCHMARK VERIFICATION")
+    print("TRUEMEMORY BENCHMARK VERIFICATION")
     print("=" * 60)
 
     # Verify all .json files in results/

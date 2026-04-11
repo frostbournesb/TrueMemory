@@ -83,8 +83,8 @@ benchmarks/locomo/
     engram_v2_run1.json      # Engram results
     evermemos_v2_run1.json   # EverMemOS results
     mem0_v2_run1.json        # Mem0 results
-    neuromem_base_v2_run1.json   # Neuromem Base results
-    neuromem_pro_v3_modal.json   # Neuromem Pro results (91.5%, Modal T4)
+    truememory_base_v2_run1.json   # TrueMemory Base results
+    truememory_pro_v3_modal.json   # TrueMemory Pro results (91.5%, Modal T4)
     rag_v2_run1.json         # RAG (ChromaDB) results
     supermemory_v2_run1.json # Supermemory results
   scripts/
@@ -93,8 +93,8 @@ benchmarks/locomo/
     bench_engram.py          # Engram memory system
     bench_evermemos.py       # EverMemOS (pre-built retrieval)
     bench_mem0.py            # Mem0 LLM-extracted memory
-    bench_neuromem_base.py   # Neuromem Base tier
-    bench_neuromem_pro.py    # Neuromem Pro tier (T4 GPU)
+    bench_truememory_base.py   # TrueMemory Base tier
+    bench_truememory_pro.py    # TrueMemory Pro tier (T4 GPU)
     bench_rag.py             # ChromaDB RAG baseline
     bench_supermemory.py     # Supermemory cloud API
     modal_benchmark.py       # Development runner (see individual scripts instead)

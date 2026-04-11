@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from neuromem.ingest.transcript import parse_transcript, format_for_extraction, Message
+from truememory.ingest.transcript import parse_transcript, format_for_extraction, Message
 
 
 def test_parse_json_array():

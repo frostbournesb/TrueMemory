@@ -6,7 +6,7 @@ against a realistic synthetic transcript that matches the documented Claude Code
 conversation format (JSON array of turns with `type` and `content` fields, where
 assistant content can be a list of content blocks).
 
-The tests use a mock Memory backend so they run without neuromem-core installed
+The tests use a mock Memory backend so they run without truememory installed
 and without any LLM API calls — we force heuristic extraction mode.
 """
 
@@ -16,10 +16,10 @@ import json
 import tempfile
 from pathlib import Path
 
-from neuromem.ingest.dedup import DedupAction
-from neuromem.ingest.encoding_gate import EncodingGate
-from neuromem.ingest.pipeline import IngestionPipeline, IngestionResult
-from neuromem.ingest.transcript import parse_transcript, format_for_extraction
+from truememory.ingest.dedup import DedupAction
+from truememory.ingest.encoding_gate import EncodingGate
+from truememory.ingest.pipeline import IngestionPipeline, IngestionResult
+from truememory.ingest.transcript import parse_transcript, format_for_extraction
 
 
 # Load the fixture once
@@ -252,12 +252,12 @@ def test_e2e_short_transcript_skipped():
 
 
 # ---------------------------------------------------------------------------
-# Encoding gate + neuromem delegation tests
+# Encoding gate + truememory delegation tests
 # ---------------------------------------------------------------------------
 
-def test_encoding_gate_handles_missing_neuromem_gracefully():
+def test_encoding_gate_handles_missing_truememory_gracefully():
     """
-    When neuromem.salience and neuromem.predictive are not available (e.g. test env),
+    When truememory.salience and truememory.predictive are not available (e.g. test env),
     the gate should still work via the heuristic fallback path.
     """
     memory = MockMemory()

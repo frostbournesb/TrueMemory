@@ -16,7 +16,7 @@ every real transcript because it was only looking at the top-level
 
 from pathlib import Path
 
-from neuromem.ingest.transcript import Message, format_for_extraction, parse_transcript
+from truememory.ingest.transcript import Message, format_for_extraction, parse_transcript
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sample_real_claude_code_transcript.jsonl"
 

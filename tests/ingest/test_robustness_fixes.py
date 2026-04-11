@@ -46,14 +46,14 @@ from unittest.mock import patch
 
 import pytest
 
-from neuromem.ingest.extractor import (
+from truememory.ingest.extractor import (
     ExtractedFact,
     _chunk_transcript,
     extract_facts,
 )
-from neuromem.ingest.models import LLMConfig
-from neuromem.ingest.pipeline import IngestionPipeline, save_trace, IngestionResult
-from neuromem.ingest.transcript import parse_transcript
+from truememory.ingest.models import LLMConfig
+from truememory.ingest.pipeline import IngestionPipeline, save_trace, IngestionResult
+from truememory.ingest.transcript import parse_transcript
 
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -99,7 +99,7 @@ def _run_cli(args: list[str], env: dict | None = None) -> subprocess.CompletedPr
     if env:
         base_env.update(env)
     return subprocess.run(
-        [sys.executable, "-m", "neuromem.ingest.cli"] + args,
+        [sys.executable, "-m", "truememory.ingest.cli"] + args,
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
@@ -130,7 +130,7 @@ def test_bug1_unreadable_file_returns_empty_not_fake_content(caplog):
         os.chmod(path, 0o000)
 
         caplog.clear()
-        caplog.set_level(logging.ERROR, logger="neuromem.ingest.transcript")
+        caplog.set_level(logging.ERROR, logger="truememory.ingest.transcript")
         msgs = parse_transcript(path)
 
         # MUST return empty — never a fake Message with path-as-content
@@ -243,7 +243,7 @@ def test_bug3_save_trace_does_not_raise_on_unwritable_dir(caplog):
             target = locked_dir / "trace.json"
 
             caplog.clear()
-            caplog.set_level(logging.WARNING, logger="neuromem.ingest.pipeline")
+            caplog.set_level(logging.WARNING, logger="truememory.ingest.pipeline")
 
             # Must return False, not raise
             ok = save_trace(result, target)
@@ -396,7 +396,7 @@ def test_bug5_extract_facts_calls_llm_for_every_chunk():
 
     config = LLMConfig(provider="ollama", model="fake", base_url="http://localhost:0")
 
-    with patch("neuromem.ingest.extractor.complete", side_effect=fake_complete):
+    with patch("truememory.ingest.extractor.complete", side_effect=fake_complete):
         facts = extract_facts(transcript, config)
 
     # Must have called complete() MORE than once — the old code would
@@ -426,7 +426,7 @@ def test_bug5_extract_facts_dedupes_across_chunks():
         return '[{"content": "User is verbose", "category": "preference"}]'
 
     config = LLMConfig(provider="ollama", model="fake", base_url="http://localhost:0")
-    with patch("neuromem.ingest.extractor.complete", side_effect=fake_complete):
+    with patch("truememory.ingest.extractor.complete", side_effect=fake_complete):
         facts = extract_facts(transcript, config)
 
     # After dedupe, only one fact should remain even though multiple chunks ran
@@ -455,10 +455,10 @@ def test_bug5_extract_facts_respects_max_chunks_cap(caplog):
         return "[]"
 
     caplog.clear()
-    caplog.set_level(logging.WARNING, logger="neuromem.ingest.extractor")
+    caplog.set_level(logging.WARNING, logger="truememory.ingest.extractor")
 
     config = LLMConfig(provider="ollama", model="fake", base_url="http://localhost:0")
-    with patch("neuromem.ingest.extractor.complete", side_effect=fake_complete) as mock:
+    with patch("truememory.ingest.extractor.complete", side_effect=fake_complete) as mock:
         extract_facts(transcript, config, max_chunks=3)
 
     # Should have called complete() exactly max_chunks times
@@ -520,7 +520,7 @@ def test_improvement_b_malformed_jsonl_warns(caplog, tmp_path):
     )
 
     caplog.clear()
-    caplog.set_level(logging.WARNING, logger="neuromem.ingest.transcript")
+    caplog.set_level(logging.WARNING, logger="truememory.ingest.transcript")
     msgs = parse_transcript(str(path))
 
     # Good lines should still be parsed

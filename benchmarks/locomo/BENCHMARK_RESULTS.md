@@ -11,8 +11,8 @@ Note: This evaluation uses a lenient semantic-match rubric; rankings are valid a
 | Rank | System | Accuracy | Correct | Errors | Wall Clock |
 |------|--------|----------|---------|--------|------------|
 | 1 | EverMemOS\* | **94.5%** | 1455/1540 | 0 | 895s |
-| 2 | Neuromem Pro | **91.5%** | 1409/1540 | 0 | 3432s |
-| 3 | Neuromem Base | **88.2%** | 1359/1540 | 0 | 1551s |
+| 2 | TrueMemory Pro | **91.5%** | 1409/1540 | 0 | 3432s |
+| 3 | TrueMemory Base | **88.2%** | 1359/1540 | 0 | 1551s |
 | 4 | RAG (ChromaDB) | 86.2% | 1327/1540 | 0 | 1020s |
 | 5 | Engram | 84.5% | 1302/1540 | 0 | 1076s |
 | 6 | BM25 | 80.5% | 1239/1540 | 0 | 1117s |
@@ -30,8 +30,8 @@ Question categories: **Cat 1** = single-hop, **Cat 2** = multi-hop, **Cat 3** = 
 | System | Cat 1 (282) | Cat 2 (321) | Cat 3 (96) | Cat 4 (841) | Overall |
 |--------|-------------|-------------|------------|-------------|---------|
 | EverMemOS | 94.7% (267) | 92.2% (296) | 82.3% (79) | 96.7% (813) | 94.5% |
-| Neuromem Pro | 91.1% (257) | 90.7% (291) | 84.4% (81) | 92.7% (780) | 91.5% |
-| Neuromem Base | 87.2% (246) | 86.3% (277) | 81.2% (78) | 90.1% (758) | 88.2% |
+| TrueMemory Pro | 91.1% (257) | 90.7% (291) | 84.4% (81) | 92.7% (780) | 91.5% |
+| TrueMemory Base | 87.2% (246) | 86.3% (277) | 81.2% (78) | 90.1% (758) | 88.2% |
 | RAG (ChromaDB) | 86.9% (245) | 84.4% (271) | 79.2% (76) | 87.4% (735) | 86.2% |
 | Engram | 78.4% (221) | 88.8% (285) | 69.8% (67) | 86.7% (729) | 84.5% |
 | BM25 | 77.7% (219) | 79.8% (256) | 69.8% (67) | 82.9% (697) | 80.5% |
@@ -54,19 +54,19 @@ All P95 values computed from the per-question `answer_latency_s` and `judge_late
 | Engram | 1075.6 | 0.70 |
 | BM25 | 1117.1 | 0.73 |
 | Mem0 | 1405.3 | 0.91 |
-| Neuromem Base | 1550.6 | 1.01 |
+| TrueMemory Base | 1550.6 | 1.01 |
 | Supermemory | 2137.6 | 1.39 |
-| Neuromem Pro | 3432.1 | 2.23 |
+| TrueMemory Pro | 3432.1 | 2.23 |
 
 ### 3b. Answer Generation Latency
 
 | System | Avg (s) | P95 (s) |
 |--------|---------|---------|
 | Supermemory | 2.26 | 3.91 |
-| Neuromem Pro | 2.32 | 3.40 |
+| TrueMemory Pro | 2.32 | 3.40 |
 | Mem0 | 2.41 | 3.64 |
 | EverMemOS | 2.52 | 3.88 |
-| Neuromem Base | 2.88 | 4.45 |
+| TrueMemory Base | 2.88 | 4.45 |
 | RAG (ChromaDB) | 2.94 | 4.32 |
 | BM25 | 2.95 | 4.47 |
 | Engram | 3.52 | 6.00 |
@@ -75,13 +75,13 @@ All P95 values computed from the per-question `answer_latency_s` and `judge_late
 
 | System | Avg (s) | P95 (s) |
 |--------|---------|---------|
-| Neuromem Pro | 1.81 | 2.83 |
+| TrueMemory Pro | 1.81 | 2.83 |
 | Mem0 | 1.88 | 2.81 |
 | RAG (ChromaDB) | 1.88 | 2.86 |
 | Engram | 1.90 | 2.88 |
 | EverMemOS | 1.95 | 2.90 |
 | Supermemory | 1.95 | 2.89 |
-| Neuromem Base | 1.96 | 3.00 |
+| TrueMemory Base | 1.96 | 3.00 |
 | BM25 | 1.98 | 3.09 |
 
 Answer generation and judging latency are dominated by the OpenRouter API call to gpt-4.1-mini / gpt-4o-mini. Differences between systems in these columns reflect context length variance (larger retrieved contexts produce longer answers and slower inference). The per-question wall clock differences are driven by retrieval overhead (embedding, indexing, search).
@@ -95,8 +95,8 @@ All costs are for a full 1540-question run.
 | System | Retrieval | Ans Gen | Judging | Ingestion | Compute | Total | $/Query | $/Correct |
 |--------|-----------|---------|---------|-----------|---------|-------|---------|-----------|
 | EverMemOS\* | $0\* | $0.80 | $0.50 | $0 | $0.10 | $1.40\* | $0.0009\* | $0.0010\* |
-| Neuromem Pro | $0.25 | $0.80 | $0.50 | $0 | $0.50 | $2.05 | $0.0013 | $0.0015 |
-| Neuromem Base | $0 | $0.80 | $0.50 | $0 | $0.10 | $1.40 | $0.0009 | $0.0010 |
+| TrueMemory Pro | $0.25 | $0.80 | $0.50 | $0 | $0.50 | $2.05 | $0.0013 | $0.0015 |
+| TrueMemory Base | $0 | $0.80 | $0.50 | $0 | $0.10 | $1.40 | $0.0009 | $0.0010 |
 | RAG (ChromaDB) | $0 | $0.80 | $0.50 | $0 | $0.10 | $1.40 | $0.0009 | $0.0011 |
 | Engram | $0 | $0.80 | $0.50 | $0 | $0.10 | $1.40 | $0.0009 | $0.0011 |
 | BM25 | $0 | $0.80 | $0.50 | $0 | $0.10 | $1.40 | $0.0009 | $0.0011 |
@@ -104,10 +104,10 @@ All costs are for a full 1540-question run.
 | Mem0 | $0 | $0.80 | $0.50 | $1.50 | $0.10 | $2.90 | $0.0019 | $0.0031 |
 
 **Notes:**
-- **Retrieval** is $0 for all systems except Neuromem Pro, which uses HyDE (Hypothetical Document Embeddings) requiring an extra LLM call per query ($0.25 total for 1540 queries via OpenRouter).
+- **Retrieval** is $0 for all systems except TrueMemory Pro, which uses HyDE (Hypothetical Document Embeddings) requiring an extra LLM call per query ($0.25 total for 1540 queries via OpenRouter).
 - **Ans Gen** and **Judging** costs are approximately equal across all systems since the same models and prompts are used. The $0.80 answer generation cost and $0.50 judging cost (3 judge calls per question) are driven by gpt-4.1-mini and gpt-4o-mini pricing on OpenRouter.
 - **Ingestion** is the cost of LLM calls during memory storage. Mem0 uses an LLM to extract structured memories from each message ($1.50 for 10 conversations). Supermemory's cloud API has its own ingestion cost ($0.50).
-- All systems using local retrieval (BM25, Engram, Neuromem Base, RAG) have $0 retrieval cost since no API calls are needed during search.
+- All systems using local retrieval (BM25, Engram, TrueMemory Base, RAG) have $0 retrieval cost since no API calls are needed during search.
 - \*EverMemOS retrieval runs outside this harness on DeepInfra (API cost not counted).
 
 ---
@@ -120,8 +120,8 @@ All costs are for a full 1540-question run.
 | Engram | Modal (CPU) | 4 GB | No | Modal + OpenRouter |
 | EverMemOS | Modal (CPU) | 2 GB | No | Modal + OpenRouter |
 | Mem0 | Modal (CPU) | 4 GB | No | Modal + OpenRouter |
-| Neuromem Base | Modal (CPU) | 4 GB | No | Modal + OpenRouter |
-| Neuromem Pro | Modal (CPU/GPU) | 4 GB | Optional | Modal + OpenRouter |
+| TrueMemory Base | Modal (CPU) | 4 GB | No | Modal + OpenRouter |
+| TrueMemory Pro | Modal (CPU/GPU) | 4 GB | Optional | Modal + OpenRouter |
 | RAG (ChromaDB) | Modal (CPU) | 4 GB | No | Modal + OpenRouter |
 | Supermemory | Modal (CPU) | 2 GB | No | Modal + OpenRouter + Supermemory API |
 
@@ -137,8 +137,8 @@ All costs are for a full 1540-question run.
 | Engram | Built-in SQLite search | None | None | 100 | No |
 | EverMemOS | BM25 + Embedding + RRF + Reranker | Proprietary | Proprietary | N/A | N/A |
 | Mem0 | LLM-extracted memories + embedding similarity | sentence-transformers | None | Default | No |
-| Neuromem Base | FTS5 + Model2Vec hybrid + RRF | potion-base-8M (256d, 8M params) | ms-marco-MiniLM-L6-v2 (22M params) | 100 | No |
-| Neuromem Pro | FTS5 + Qwen3-Embedding + RRF | Qwen3-Embedding-0.6B (1024d, 600M params) | mxbai-rerank-large-v1 (435M params) | 100 | Yes |
+| TrueMemory Base | FTS5 + Model2Vec hybrid + RRF | potion-base-8M (256d, 8M params) | ms-marco-MiniLM-L6-v2 (22M params) | 100 | No |
+| TrueMemory Pro | FTS5 + Qwen3-Embedding + RRF | Qwen3-Embedding-0.6B (1024d, 600M params) | mxbai-rerank-large-v1 (435M params) | 100 | Yes |
 | RAG (ChromaDB) | Dense vector cosine similarity | sentence-transformers (default) | None | 100 | No |
 | Supermemory | Cloud API (opaque) | Unknown (cloud) | Unknown (cloud) | Default | Unknown |
 
@@ -160,7 +160,7 @@ Both Mem0 (61.4%) and Supermemory (65.4%) suffer from **lossy ingestion** -- the
 
 Both systems were designed for personal assistant use cases (storing preferences, key facts) rather than verbatim conversation recall. The LoCoMo benchmark specifically tests detailed recall across long, multi-session conversations -- a task that punishes lossy extraction.
 
-Systems that store raw messages with timestamps and speaker attribution (Neuromem, RAG, BM25, Engram, EverMemOS) all score above 80%.
+Systems that store raw messages with timestamps and speaker attribution (TrueMemory, RAG, BM25, Engram, EverMemOS) all score above 80%.
 
 ---
 
@@ -198,8 +198,8 @@ All result files are in `results/` and contain the full per-question detail arra
 | `engram_v2_run1.json` | Engram | 84.5% | Modal run |
 | `evermemos_v2_run1.json` | EverMemOS | 94.5% | Modal run (pre-computed retrieval) |
 | `mem0_v2_run1.json` | Mem0 | 61.4% | Modal run |
-| `neuromem_base_v2_run1.json` | Neuromem Base | 88.2% | Modal run |
-| `neuromem_pro_v3_modal.json` | Neuromem Pro | 91.5% | Modal T4 |
+| `truememory_base_v2_run1.json` | TrueMemory Base | 88.2% | Modal run |
+| `truememory_pro_v3_modal.json` | TrueMemory Pro | 91.5% | Modal T4 |
 | `rag_v2_run1.json` | RAG (ChromaDB) | 86.2% | Modal run |
 | `supermemory_v2_run1.json` | Supermemory | 65.4% | Modal run |
 
@@ -215,8 +215,8 @@ All result files are in `results/` and contain the full per-question detail arra
 | `bench_engram.py` | Engram memory | engram-core | No |
 | `bench_evermemos.py` | EverMemOS (pre-built retrieval) | openai | No |
 | `bench_mem0.py` | Mem0 LLM-extracted memory | mem0ai, sentence-transformers | No |
-| `bench_neuromem_base.py` | Neuromem Base tier | neuromem-core, sentence-transformers | No |
-| `bench_neuromem_pro.py` | Neuromem Pro tier | neuromem-core[gpu], sentence-transformers | Optional |
+| `bench_truememory_base.py` | TrueMemory Base tier | truememory, sentence-transformers | No |
+| `bench_truememory_pro.py` | TrueMemory Pro tier | truememory[gpu], sentence-transformers | Optional |
 | `bench_rag.py` | ChromaDB RAG | chromadb, sentence-transformers | No |
 | `bench_supermemory.py` | Supermemory cloud API | supermemory | No |
 
@@ -269,7 +269,7 @@ modal volume put locomo-results evermemos_retrieval.json /
 modal run --detach bench_evermemos.py
 ```
 
-For Neuromem Pro, the Modal script uses a T4 GPU. The published 91.5% score is from `neuromem_pro_v3_modal.json` (committed under `results/`).
+For TrueMemory Pro, the Modal script uses a T4 GPU. The published 91.5% score is from `truememory_pro_v3_modal.json` (committed under `results/`).
 
 ### Step 4: Download Results
 

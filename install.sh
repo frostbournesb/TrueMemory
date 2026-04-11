@@ -1,30 +1,30 @@
 #!/bin/sh
-# Neuromem installer — https://github.com/buildingjoshbetter/neuromem
+# TrueMemory installer — https://github.com/buildingjoshbetter/TrueMemory
 #
 # One-line install:
-#   curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/neuromem/main/install.sh | sh
+#   curl -LsSf https://raw.githubusercontent.com/buildingjoshbetter/TrueMemory/main/install.sh | sh
 #
 # What this does:
 #   1. Installs uv (Astral's Python tool manager) if missing — uv brings its own
 #      Python runtime, so your system Python is never touched.
 #   2. Fetches a managed Python 3.12 into ~/.local/share/uv/python/.
-#   3. Installs neuromem-core as an isolated uv tool.
-#   4. Runs `neuromem-mcp --setup` (code from PyPI) to auto-configure
-#      Claude Code and/or Claude Desktop. Set NEUROMEM_SKIP_SETUP=1 to skip.
+#   3. Installs truememory as an isolated uv tool.
+#   4. Runs `truememory-mcp --setup` (code from PyPI) to auto-configure
+#      Claude Code and/or Claude Desktop. Set TRUEMEMORY_SKIP_SETUP=1 to skip.
 #
 # Environment overrides:
-#   NEUROMEM_PY=3.12         # pin a specific Python (default: 3.12)
-#   NEUROMEM_EXTRAS=mcp      # pip extras (default: mcp; use "gpu,mcp" for Pro)
-#   NEUROMEM_SOURCE=...      # install from a local path or git URL instead of PyPI
-#                            # (useful for testing: NEUROMEM_SOURCE=/path/to/neuromem)
-#   NEUROMEM_SKIP_SETUP=1    # skip the Claude auto-config step
+#   TRUEMEMORY_PY=3.12         # pin a specific Python (default: 3.12)
+#   TRUEMEMORY_EXTRAS=mcp      # pip extras (default: mcp; use "gpu,mcp" for Pro)
+#   TRUEMEMORY_SOURCE=...      # install from a local path or git URL instead of PyPI
+#                            # (useful for testing: TRUEMEMORY_SOURCE=/path/to/truememory)
+#   TRUEMEMORY_SKIP_SETUP=1    # skip the Claude auto-config step
 #
 # Safety:
 #   - No sudo required. Everything lands under $HOME.
 #   - The script body is wrapped in a main() function, so a mid-download
 #     network drop cannot execute partial logic — the file must parse
 #     completely before anything runs.
-#   - Source: https://github.com/buildingjoshbetter/neuromem/blob/main/install.sh
+#   - Source: https://github.com/buildingjoshbetter/TrueMemory/blob/main/install.sh
 #     Read it first if you want: curl -LsSf <URL> -o install.sh && less install.sh
 
 # ---------- pretty output helpers ----------
@@ -34,34 +34,34 @@ if [ -t 1 ]; then
 else
   BLUE=''; GREEN=''; YELLOW=''; RED=''; BOLD=''; DIM=''; RESET=''
 fi
-say()  { printf '%b[neuromem]%b %s\n' "$BLUE"  "$RESET" "$*"; }
-ok()   { printf '%b[neuromem]%b %s\n' "$GREEN" "$RESET" "$*"; }
-warn() { printf '%b[neuromem]%b %s\n' "$RED"   "$RESET" "$*" >&2; }
+say()  { printf '%b[truememory]%b %s\n' "$BLUE"  "$RESET" "$*"; }
+ok()   { printf '%b[truememory]%b %s\n' "$GREEN" "$RESET" "$*"; }
+warn() { printf '%b[truememory]%b %s\n' "$RED"   "$RESET" "$*" >&2; }
 die()  { warn "error: $*"; exit 1; }
 
 # ---------- main ----------
 main() {
   set -eu
 
-  NEUROMEM_PY="${NEUROMEM_PY:-3.12}"
-  NEUROMEM_EXTRAS="${NEUROMEM_EXTRAS:-mcp}"
-  NEUROMEM_SOURCE="${NEUROMEM_SOURCE:-}"
+  TRUEMEMORY_PY="${TRUEMEMORY_PY:-3.12}"
+  TRUEMEMORY_EXTRAS="${TRUEMEMORY_EXTRAS:-mcp}"
+  TRUEMEMORY_SOURCE="${TRUEMEMORY_SOURCE:-}"
 
   # Defend against hostile env vars (e.g. a malicious "paste this" blog post).
-  case "$NEUROMEM_PY" in
+  case "$TRUEMEMORY_PY" in
     ''|*[!0-9.]*)
-      die "invalid NEUROMEM_PY: '$NEUROMEM_PY' (expected digits and dots, e.g. 3.12)" ;;
+      die "invalid TRUEMEMORY_PY: '$TRUEMEMORY_PY' (expected digits and dots, e.g. 3.12)" ;;
   esac
-  case "$NEUROMEM_EXTRAS" in
+  case "$TRUEMEMORY_EXTRAS" in
     *[!a-zA-Z0-9,_-]*)
-      die "invalid NEUROMEM_EXTRAS: '$NEUROMEM_EXTRAS' (expected names like 'mcp' or 'gpu,mcp')" ;;
+      die "invalid TRUEMEMORY_EXTRAS: '$TRUEMEMORY_EXTRAS' (expected names like 'mcp' or 'gpu,mcp')" ;;
   esac
 
-  if [ -n "$NEUROMEM_SOURCE" ]; then
-    PKG_SPEC="${NEUROMEM_SOURCE}[${NEUROMEM_EXTRAS}]"
-    say "using custom source: $NEUROMEM_SOURCE"
+  if [ -n "$TRUEMEMORY_SOURCE" ]; then
+    PKG_SPEC="${TRUEMEMORY_SOURCE}[${TRUEMEMORY_EXTRAS}]"
+    say "using custom source: $TRUEMEMORY_SOURCE"
   else
-    PKG_SPEC="neuromem-core[${NEUROMEM_EXTRAS}]"
+    PKG_SPEC="truememory[${TRUEMEMORY_EXTRAS}]"
   fi
 
   # ---------- preflight ----------
@@ -89,38 +89,38 @@ main() {
       die "uv installed but not on PATH — restart your shell and re-run this script"
   fi
 
-  # ---------- step 2: ensure Python NEUROMEM_PY is available ----------
-  say "fetching managed Python $NEUROMEM_PY (system Python untouched, ~30s on first run)..."
+  # ---------- step 2: ensure Python TRUEMEMORY_PY is available ----------
+  say "fetching managed Python $TRUEMEMORY_PY (system Python untouched, ~30s on first run)..."
   # stderr is NOT suppressed — you see uv's progress output so a slow download
   # doesn't look like a frozen terminal.
-  uv python install "$NEUROMEM_PY" >/dev/null || \
-    die "failed to install managed Python $NEUROMEM_PY (see error above)"
+  uv python install "$TRUEMEMORY_PY" >/dev/null || \
+    die "failed to install managed Python $TRUEMEMORY_PY (see error above)"
 
-  # ---------- step 3: install neuromem-core as a uv tool ----------
+  # ---------- step 3: install truememory as a uv tool ----------
   say "installing $PKG_SPEC (~1-2 min on first run)..."
   # --force makes re-runs idempotent. --python pins the interpreter to avoid
   # astral-sh/uv#14110. stderr stays visible so you see real progress and errors.
-  uv tool install --python "$NEUROMEM_PY" --force "$PKG_SPEC" >/dev/null || \
-    die "neuromem-core install failed (see error above)"
+  uv tool install --python "$TRUEMEMORY_PY" --force "$PKG_SPEC" >/dev/null || \
+    die "truememory install failed (see error above)"
 
   # Future shells should see ~/.local/bin. Reversible via 'uv tool update-shell --uninstall'.
   say "adding uv's tool dir to your shell rc (reversible)..."
   uv tool update-shell >/dev/null 2>&1 || true
 
   # ---------- step 4: auto-configure Claude ----------
-  if [ "${NEUROMEM_SKIP_SETUP:-}" = "1" ]; then
-    say "skipping Claude setup (NEUROMEM_SKIP_SETUP=1)"
+  if [ "${TRUEMEMORY_SKIP_SETUP:-}" = "1" ]; then
+    say "skipping Claude setup (TRUEMEMORY_SKIP_SETUP=1)"
   else
     say "configuring Claude Code / Claude Desktop..."
-    # neuromem-mcp lives at ~/.local/bin/neuromem-mcp. Its sys.executable
+    # truememory-mcp lives at ~/.local/bin/truememory-mcp. Its sys.executable
     # resolves to the isolated tool venv, so Claude gets a stable absolute path.
-    neuromem-mcp --setup || \
-      warn "auto-setup returned non-zero (you can re-run it with: neuromem-mcp --setup)"
+    truememory-mcp --setup || \
+      warn "auto-setup returned non-zero (you can re-run it with: truememory-mcp --setup)"
   fi
 
   # ---------- done ----------
   printf '\n'
-  ok "neuromem-core installed."
+  ok "truememory installed."
   printf '\n'
   printf '  %b%bIMPORTANT — if Claude Desktop was already open:%b\n' "$YELLOW" "$BOLD" "$RESET"
   printf '    Quit it completely with %bCmd+Q%b and reopen it.\n' "$BOLD" "$RESET"
@@ -131,9 +131,9 @@ main() {
   printf '    %b"what do you remember about me?"%b\n' "$DIM" "$RESET"
   printf '\n'
   printf '  %bCommands:%b\n' "$GREEN" "$RESET"
-  printf '    neuromem-mcp --setup              %b# re-run Claude auto-config%b\n' "$DIM" "$RESET"
-  printf '    uv tool upgrade neuromem-core     %b# update to latest%b\n' "$DIM" "$RESET"
-  printf '    uv tool uninstall neuromem-core   %b# uninstall%b\n' "$DIM" "$RESET"
+  printf '    truememory-mcp --setup              %b# re-run Claude auto-config%b\n' "$DIM" "$RESET"
+  printf '    uv tool upgrade truememory     %b# update to latest%b\n' "$DIM" "$RESET"
+  printf '    uv tool uninstall truememory   %b# uninstall%b\n' "$DIM" "$RESET"
   printf '\n'
 }
 

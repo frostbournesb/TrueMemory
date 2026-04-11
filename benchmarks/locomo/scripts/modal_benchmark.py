@@ -63,15 +63,15 @@ cognee_img = (modal.Image.debian_slim(python_version="3.11")
 supermemory_img = (modal.Image.debian_slim(python_version="3.11")
     .pip_install("openai>=1.0", "supermemory"))
 
-neuromem_base_img = (modal.Image.debian_slim(python_version="3.11")
-    .pip_install("openai>=1.0", "neuromem-core", "sentence-transformers"))
+truememory_base_img = (modal.Image.debian_slim(python_version="3.11")
+    .pip_install("openai>=1.0", "truememory", "sentence-transformers"))
 
-neuromem_pro_img = (modal.Image.debian_slim(python_version="3.11")
-    .pip_install("openai>=1.0", "neuromem-core[gpu]", "sentence-transformers"))
+truememory_pro_img = (modal.Image.debian_slim(python_version="3.11")
+    .pip_install("openai>=1.0", "truememory[gpu]", "sentence-transformers"))
 
 evermemos_img = base_img  # Only needs answer gen + judging (retrieval is pre-built)
 
-# ── Eval Config (IDENTICAL to Neuromem v2) ───────────────────────────────
+# ── Eval Config (IDENTICAL to TrueMemory v2) ───────────────────────────────
 
 ANSWER_MODEL = "openai/gpt-4.1-mini"
 ANSWER_MAX_TOKENS = 200
@@ -375,7 +375,7 @@ def retrieve_supermemory(conv_data, conv_idx):
     return results
 
 def _nm_format_ctx(results):
-    """Format Neuromem results with metadata — matches v2 scripts exactly."""
+    """Format TrueMemory results with metadata — matches v2 scripts exactly."""
     parts = []
     for r in results:
         sender = r.get("sender", "?")
@@ -400,16 +400,16 @@ def _nm_make_hyde_fn():
         return resp.choices[0].message.content
     return _call
 
-def retrieve_neuromem_base(conv_data, conv_idx):
-    from neuromem.vector_search import set_embedding_model
+def retrieve_truememory_base(conv_data, conv_idx):
+    from truememory.vector_search import set_embedding_model
     set_embedding_model("model2vec")
-    from neuromem.engine import NeuromemEngine
-    from neuromem.reranker import get_reranker
+    from truememory.engine import TrueMemoryEngine
+    from truememory.reranker import get_reranker
     import tempfile
     get_reranker(model_name="cross-encoder/ms-marco-MiniLM-L6-v2")
     msgs = parse_conv(conv_data)
     tmp_db = tempfile.mktemp(suffix=".db", prefix=f"base_{conv_idx}_")
-    engine = NeuromemEngine(db_path=tmp_db)
+    engine = TrueMemoryEngine(db_path=tmp_db)
     # Ingest
     import json as _json
     tmp_json = tempfile.mktemp(suffix=".json")
@@ -433,17 +433,17 @@ def retrieve_neuromem_base(conv_data, conv_idx):
     os.unlink(tmp_json)
     return results
 
-def retrieve_neuromem_pro(conv_data, conv_idx):
-    from neuromem.vector_search import set_embedding_model
+def retrieve_truememory_pro(conv_data, conv_idx):
+    from truememory.vector_search import set_embedding_model
     set_embedding_model("qwen3")
-    from neuromem.engine import NeuromemEngine
-    from neuromem.reranker import get_reranker
+    from truememory.engine import TrueMemoryEngine
+    from truememory.reranker import get_reranker
     import tempfile
     get_reranker(model_name="mixedbread-ai/mxbai-rerank-large-v1")
     llm_fn = _nm_make_hyde_fn()
     msgs = parse_conv(conv_data)
     tmp_db = tempfile.mktemp(suffix=".db", prefix=f"pro_{conv_idx}_")
-    engine = NeuromemEngine(db_path=tmp_db)
+    engine = TrueMemoryEngine(db_path=tmp_db)
     # Ingest
     import json as _json
     tmp_json = tempfile.mktemp(suffix=".json")
@@ -501,8 +501,8 @@ RETRIEVERS = {
     "langgraph": (langgraph_img, retrieve_langgraph),
     "cognee": (cognee_img, retrieve_cognee),
     "supermemory": (supermemory_img, retrieve_supermemory),
-    "neuromem_base": (neuromem_base_img, retrieve_neuromem_base),
-    "neuromem_pro": (neuromem_pro_img, retrieve_neuromem_pro),
+    "truememory_base": (truememory_base_img, retrieve_truememory_base),
+    "truememory_pro": (truememory_pro_img, retrieve_truememory_pro),
     "evermemos": (evermemos_img, retrieve_evermemos),
 }
 
@@ -584,13 +584,13 @@ def w_cognee(conv_data, conv_idx, smoke=False): return _bench_conv("cognee", con
               timeout=14400, memory=4096)
 def w_supermemory(conv_data, conv_idx, smoke=False): return _bench_conv("supermemory", conv_data, conv_idx, smoke)
 
-@app.function(image=neuromem_base_img, secrets=[modal.Secret.from_name("openrouter-key")],
+@app.function(image=truememory_base_img, secrets=[modal.Secret.from_name("openrouter-key")],
               timeout=14400, memory=8192)
-def w_neuromem_base(conv_data, conv_idx, smoke=False): return _bench_conv("neuromem_base", conv_data, conv_idx, smoke)
+def w_truememory_base(conv_data, conv_idx, smoke=False): return _bench_conv("truememory_base", conv_data, conv_idx, smoke)
 
-@app.function(image=neuromem_pro_img, secrets=[modal.Secret.from_name("openrouter-key")],
+@app.function(image=truememory_pro_img, secrets=[modal.Secret.from_name("openrouter-key")],
               timeout=14400, memory=8192, gpu="T4")
-def w_neuromem_pro(conv_data, conv_idx, smoke=False): return _bench_conv("neuromem_pro", conv_data, conv_idx, smoke)
+def w_truememory_pro(conv_data, conv_idx, smoke=False): return _bench_conv("truememory_pro", conv_data, conv_idx, smoke)
 
 @app.function(image=evermemos_img, secrets=[modal.Secret.from_name("openrouter-key")],
               timeout=14400, memory=4096, volumes={VM: vol})
@@ -598,7 +598,7 @@ def w_evermemos(conv_data, conv_idx, smoke=False): return _bench_conv("evermemos
 
 WORKERS = {"mem0":w_mem0, "rag":w_rag, "bm25":w_bm25, "engram":w_engram,
            "langgraph":w_langgraph, "cognee":w_cognee, "supermemory":w_supermemory,
-           "neuromem_base":w_neuromem_base, "neuromem_pro":w_neuromem_pro, "evermemos":w_evermemos}
+           "truememory_base":w_truememory_base, "truememory_pro":w_truememory_pro, "evermemos":w_evermemos}
 
 
 # ══════════════════════════════════════════════════════════════════════════

@@ -14,9 +14,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from neuromem.engine import NeuromemEngine
+from truememory.engine import TrueMemoryEngine
 
-DB_PATH = Path.home() / ".neuromem" / "memories.db"
+DB_PATH = Path.home() / ".truememory" / "memories.db"
 OUTPUT_PATH = Path.home() / "Desktop" / "RERANKER_SHOOTOUT_20.md"
 
 # 10 diverse test queries
@@ -25,7 +25,7 @@ QUERIES = [
     "rustling the feathers analysis",
     "GPU box RTX 5090",
     "blogging substack medium",
-    "neuromem benchmark locomo",
+    "truememory benchmark locomo",
     "paradox pi node camera",
     "project sunrise dashboard",
     "skippy texting imessage",
@@ -108,7 +108,7 @@ def main():
     print("RERANKER MEGA-SHOOTOUT — 20 MODELS")
     print("=" * 70)
 
-    engine = NeuromemEngine(db_path=str(DB_PATH))
+    engine = TrueMemoryEngine(db_path=str(DB_PATH))
     engine._ensure_connection()
     msg_count = engine.conn.execute("SELECT COUNT(*) FROM messages").fetchone()[0]
     print(f"DB: {msg_count} memories | Candidate pool: {CANDIDATE_POOL} | Top-k: {TOP_K}")
