@@ -33,7 +33,7 @@ import json
 import re
 import sqlite3
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from truememory.fts_search import _build_safe_fts_query
 
@@ -614,7 +614,7 @@ def build_summaries(conn: sqlite3.Connection) -> int:
     # Clear existing summaries for a clean rebuild
     conn.execute("DELETE FROM summaries")
 
-    now = datetime.now(UTC).isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     summary_count = 0
 
     # ---- Monthly summaries ----
@@ -1040,7 +1040,7 @@ def build_entity_summary_sheets(conn):
     Build searchable entity profile summaries stored as special records
     in the summaries table with period='entity_profile'.
     """
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     # Get all entities with significant message counts
     entities = conn.execute(
@@ -1049,7 +1049,7 @@ def build_entity_summary_sheets(conn):
         "ORDER BY cnt DESC"
     ).fetchall()
 
-    now = datetime.now(UTC).isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     count = 0
 
     for entity_name, msg_count in entities:
@@ -1134,8 +1134,8 @@ def build_structured_facts(conn):
     Extract structured facts (team roster, locations, key events) and store
     as searchable summary records. Enables aggregation queries.
     """
-    from datetime import UTC, datetime
-    now = datetime.now(UTC).isoformat()
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()
     count = 0
 
     all_msgs = _get_all_messages_chrono(conn)

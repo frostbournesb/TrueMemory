@@ -27,7 +27,7 @@ import json
 import re
 import sqlite3
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from truememory.fts_search import _build_safe_fts_query
 
@@ -524,7 +524,7 @@ def build_entity_profiles(conn: sqlite3.Connection) -> dict:
         profiles[sender] = profile
 
         # Store in database
-        now = datetime.now(UTC).isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         conn.execute(
             """INSERT OR REPLACE INTO entity_profiles
                (entity, message_count, traits, communication_style,
@@ -974,7 +974,7 @@ def update_entity_profile_incremental(
         old_rels[recipient] = rel
 
     # ── Store ─────────────────────────────────────────────────────────
-    now = datetime.now(UTC).isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     conn.execute(
         """INSERT OR REPLACE INTO entity_profiles
            (entity, message_count, traits, communication_style,
@@ -1187,7 +1187,7 @@ def build_dunbar_hierarchy(conn, primary_entity=None):
     """
     if primary_entity is None:
         return {}
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     # Count messages per contact
     rows = conn.execute(
