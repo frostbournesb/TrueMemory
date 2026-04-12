@@ -38,7 +38,7 @@ installed and run independently.
 
 1. Fork the repo and clone locally.
 2. Create a virtualenv: `python -m venv .venv && source .venv/bin/activate`
-3. Install in dev mode: `pip install -e .[all]`
+3. Install in dev mode: `pip install -e ".[all,dev]"`
 4. Run tests: `pytest tests/ -v`
 5. Run linter: `ruff check truememory/`
 
